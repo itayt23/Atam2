@@ -11,12 +11,13 @@ read_input:
   movq %rsp, %rbp 
   sub $16, %rsp
   xor %rbx, %rbx
+  lea n(%rip), %r8 #n address is in r8
   movq %rdi, -16(%rbp) # this is the codeword
-  movq path, %rdi
+  lea path(%rip), %rdi
   call get_path
   popq %rbp
   movq $2, %rax
-  movq path, %rdi
+  lea path(%rip), %rdi
   movq $0, %rsi
   syscall #sys_open
   movq %rax, -8(%rbp) # saving file discroptor to -8(%rbp)
@@ -24,10 +25,10 @@ read_input:
   movq -8(%rbp), %rdi
   movq $0, %rax
   movq $8, %rdx
-  movq num, %rsi
+  lea num(%rip), %rsi
   syscall #sys_read, need to check about where it start
   
-  movq num, %rdi
+  lea num(%rip), %rdi
   find_newline:
   cmp $0xa, (%rdi)
   inc %rdi
@@ -35,14 +36,14 @@ read_input:
   jne find_newline
   movq $0, -1(%rdi) #change newline to \0 
 
-  movq num, %rdi
+  lea num(%rip), %rdi
   call atam_atol
-  movq %rax, (n)
+  movq %rax, (%r8)
 
   movq -8(%rbp), %rdi
   movq $0, %rax
   movq $8, %rdx
-  movq num, %rsi
+  lea num(%rip), %rsi
   syscall #sys_read, need to check about where it start
 
   movq $3, %rax
@@ -50,7 +51,7 @@ read_input:
   syscall #sys_close
 
   movq $2, %rax
-  movq path, %rdi
+  lea path(%rip), %rdi
   movq $0, %rsi
   syscall #sys_open
   movq %rax, -8(%rbp) # saving file discroptor to -8(%rbp)
@@ -58,16 +59,16 @@ read_input:
   movq -8(%rbp), %rdi
   movq $0, %rax
   movq %rbx, %rdx
-  movq num, %rsi
+  lea num(%rip), %rsi
   syscall #sys_read
 
   movq -8(%rbp), %rdi
   movq $0, %rax
-  movq (n), %rdx
+  movq (%r8), %rdx
   movq -16(%rbp), %rsi
   syscall #sys_read
 
-  movq (n), %rax
+  movq (%r8), %rax
   mov $8, %rbx
   div %rbx
 
