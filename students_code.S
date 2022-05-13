@@ -71,10 +71,24 @@ read_input:
   mov $8, %rbx
   movq $0, %rdx
   div %rbx
-DEBUG:
+  leave
+  END_READ_INPUT:
   ret
 
 hamming_weight:
+  push %rbp
+  movq %rsp, %rbp 
+  movq %rsi, %rcx # this is the len
+  xor %rax, %rax
+  iterate_over_codeword:
+  movq (%rdi), %rbx
+  popcnt %rbx, %r8 
+  add %r8, %rax
+
+  add $8, %rdi
+  loop iterate_over_codeword
+DEBUG:
+  leave
   ret
 
 negate_first_k:
