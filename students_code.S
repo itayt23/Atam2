@@ -3,7 +3,6 @@
 .section .bss
 .lcomm path, 1024
 .lcomm num, 8 #length of text from file in path
-.lcomm n, 8 #codeword length
 
 .section .text
 read_input:
@@ -11,11 +10,10 @@ read_input:
   movq %rsp, %rbp 
   sub $16, %rsp
   xor %rbx, %rbx
-  lea n(%rip), %r8 #n address is in r8
   movq %rdi, -16(%rbp) # this is the codeword
   lea path(%rip), %rdi
   call get_path
-  popq %rbp
+  
   movq $2, %rax
   lea path(%rip), %rdi
   movq $0, %rsi
@@ -30,15 +28,16 @@ read_input:
   
   lea num(%rip), %rdi
   find_newline:
-  cmp $0xa, (%rdi)
+  movq (%rdi), %rdx
   inc %rdi
   inc %rbx
+  cmpb $'\n', %dl
   jne find_newline
   movq $0, -1(%rdi) #change newline to \0 
 
   lea num(%rip), %rdi
   call atam_atol
-  movq %rax, (%r8)
+  movq %rax, %r8
 
   movq -8(%rbp), %rdi
   movq $0, %rax
@@ -64,14 +63,15 @@ read_input:
 
   movq -8(%rbp), %rdi
   movq $0, %rax
-  movq (%r8), %rdx
+  movq %r8, %rdx
   movq -16(%rbp), %rsi
   syscall #sys_read
 
-  movq (%r8), %rax
+  movq %r8, %rax
   mov $8, %rbx
+  movq $0, %rdx
   div %rbx
-
+DEBUG:
   ret
 
 hamming_weight:
