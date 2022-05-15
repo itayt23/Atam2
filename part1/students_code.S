@@ -172,7 +172,7 @@ array_negate_first_k:
   movq %rsi, %r9 # this is k
   k_greater_than_64:
   cmp $64, %r9
-  jle end_k_greater_than_64
+  jl end_k_greater_than_64
   notq (%r8)
   sub $64, %r9
   add $8, %r8
