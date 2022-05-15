@@ -11,12 +11,12 @@ my_ili_handler:
   xor %r11, %r11
   xor %rdi, %rdi
   movq (%rsp), %rdx
-  movb %rdx, %r9 # First byte
+  movq %rdx, %r9 # First byte
   movb $8, %cl
   shr %cl, %rdx
-  movb %rdx, %r10 # Second byte
+  movq %rdx, %r10 # Second byte
   shr %cl, %rdx
-  movb %rdx, %r11 # Third byte
+  movq %rdx, %r11 # Third byte
   cmp $0x0F, %dl
   jne one_byte
   cmp $0x0F3A, %dx
