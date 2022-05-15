@@ -3,45 +3,87 @@
 .text
 .align 4, 0x90
 
-
-
 my_ili_handler:
-  iretq
-  xor %r9, %r9
-  xor %r10, %r10
-  xor %r11, %r11
-  xor %rdi, %rdi
-  movq (%rsp), %rdx
-  movq %rdx, %r9 # First byte
-  movb $8, %cl
-  shr %cl, %rdx
-  movq %rdx, %r10 # Second byte
-  shr %cl, %rdx
-  movq %rdx, %r11 # Third byte
-  cmp $0x0F, %dl
+  pushq %rax
+  pushq %rbx
+  pushq %rcx
+  pushq %rdx	
+  pushq %r8
+  pushq %r9
+  pushq %r10
+  pushq %r11
+  pushq %r12
+  pushq %r13
+  pushq %r14
+  pushq %r15
+  pushq %rsi
+  pushq %rbp
+  pushq %rsp
+
+  xorq %rdi, %rdi
+  xorq %rax, %rax
+  xorq %rcx,%rcx
+  movq 120(%rsp),%rcx
+  movq (%rcx), %rcx
+  cmpb $0x0f, %cl
   jne one_byte
-  cmp $0x0F3A, %dx
-  jne check_two_bytes
-  one_byte:
-  movq %r9, %rdi
-  call what_to_do
-  jmp end_brain_fuck
-  check_two_bytes:
-  cmp $0x0F38, %dx
-  jne two_bytes
-  jmp one_byte
-  two_bytes:
-  movq %r10, %rdi
-  call what_to_do
-  jmp end_brain_fuck
-  end_brain_fuck:
-  cmp $0, %rax
-  jne handle
-  jmp *old_ili_handler
-  end:
-  iretq
 
-
-handle:
+  movb %ch, %al
   movq %rax, %rdi
-  jmp end
+  call what_to_do
+  cmpq $0, %rax
+  je default_handler
+  jmp our_handler
+
+one_byte:
+
+  movb %cl, %al
+  movq %rax, %rdi
+  call what_to_do
+  cmpq $0, %rax
+  je default_handler
+  jmp our_handler
+
+default_handler:
+  popq %rsp
+  popq %rbp
+  popq %rsi
+  popq %r15
+  popq %r14
+  popq %r13
+  popq %r12
+  popq %r11
+  popq %r10
+  popq %r9
+  popq %r8
+  popq %rdx
+  popq %rcx
+  popq %rbx
+  popq %rax
+
+  jmp * old_ili_handler
+  jmp finish
+
+our_handler:
+  movq %rax, %rdi
+  
+  popq %rsp
+  popq %rbp
+  popq %rsi
+  popq %r15
+  popq %r14
+  popq %r13
+  popq %r12
+  popq %r11
+  popq %r10
+  popq %r9
+  popq %r8
+  popq %rdx
+  popq %rcx
+  popq %rbx
+  popq %rax
+	
+  addq $2, (%rsp) 
+	
+finish:
+  iretq
