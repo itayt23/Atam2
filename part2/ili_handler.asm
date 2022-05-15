@@ -5,19 +5,15 @@
 
 handle:
   movq %rax, %rdi
-  popq %rax
-  popq %rdx
   addq $2, (%rsp) 
   jmp end
 
 
 my_ili_handler:
-  pushq %rdx
-  pushq %rax
   xor %rdx, %rdx
   xor %rax, %rax
   xor %rdi, %rdi
-  movq 16(%rsp), %rdx
+  movq (%rsp), %rdx
   movq (%rdx), %rdx
   cmp $0x0F, %dl
   jne one_byte
@@ -33,8 +29,6 @@ my_ili_handler:
   end_brain_fuck:
   cmp $0, %rax
   jne handle
-  popq %rax
-  popq %rdx
   jmp *old_ili_handler
   end:
   iretq
