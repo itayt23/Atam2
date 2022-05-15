@@ -6,6 +6,7 @@
 
 
 my_ili_handler:
+  iretq
   xor %r9, %r9
   xor %r10, %r10
   xor %r11, %r11
