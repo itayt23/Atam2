@@ -5,6 +5,7 @@
 
 handle:
   movq %rax, %rdi
+  addq $2, (%rsp) 
   jmp end
 
 
