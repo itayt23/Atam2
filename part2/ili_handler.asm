@@ -18,6 +18,7 @@ my_ili_handler:
   xor %rax, %rax
   xor %rdi, %rdi
   movq 16(%rsp), %rdx
+  movq (%rdx), %rdx
   cmp $0x0F, %dl
   jne one_byte
   movb %dh, %al
